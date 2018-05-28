@@ -9,10 +9,11 @@ ArrayList<Cell> cells = new ArrayList<Cell>();
 
 int cellsToShow;
 boolean showVideo = false;
-
 Ani nextImage;
 float nextImg = 0;
 float nextTimeout = 1;
+
+
 void setup() {
   size(960, 540);
   transition = new Movie(this, "movie.mp4");
