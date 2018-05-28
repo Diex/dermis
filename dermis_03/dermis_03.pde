@@ -15,13 +15,14 @@ float nextTimeout = 1;
 
 
 void setup() {
-  size(960, 540);
+  size(1920, 1080);
   transition = new Movie(this, "movie.mp4");
   locs = new Locations(width, height, cols, rows);  
   Ani.init(this);
   fileManager();
   cellsToShow = 45;
   next(); 
+  noCursor();
 }
 
 
@@ -56,7 +57,7 @@ void hideAll() {
   String name = Long.toHexString(Double.doubleToLongBits(Math.random()));
   for (Cell c : cells) c.hide();
   if(!allBackup()){
-    saveFrame("data/"+name+".jpg");  
+    saveFrame("data/snapshots/"+name+".jpg");  
     saveMailsList(cells, name);
   }
   

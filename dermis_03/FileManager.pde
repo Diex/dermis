@@ -24,10 +24,10 @@ ArrayList<SkinMark> imagesBackup;
 int maxBackup = 9 * 5; //45 maximo de la pantalla
 
 void fileManager() {
-  
+
   imagesInbox = new ArrayList<SkinMark>();
   imagesBackup = new ArrayList<SkinMark>();
-  
+
   path = sketchPath();
 
   setupFolders();
@@ -50,16 +50,16 @@ SkinMark fromInbox() {
 
 SkinMark fromBackup() {
   if (imagesBackup.size() <= 0) loadImagesFromBackup();
-  
   SkinMark sm = imagesBackup.get(0);
   imagesBackup.remove(0);
-   println("image from backup");
+  println("image from backup");
   return sm;
 }
 
 
 void loadImagesFromBackup() {
   int howMany = bfolder.list().length > maxBackup ? maxBackup : bfolder.list().length;
+
   File[] files = bfolder.listFiles();
   Arrays.sort(files, new Comparator<File>() {
     public int compare(File f1, File f2) {
@@ -67,9 +67,9 @@ void loadImagesFromBackup() {
     }
   }
   );  
-  if(files.length <= 0) return;
-  
-  for (int i = 0; i <= howMany; i++) {
+  if (files.length <= 0) return;
+
+  for (int i = 0; i < howMany; i++) {
     if (isJpg(files[i].getPath())) {
       PImage p = loadImage(files[i].getPath());
       String email = files[i].getName().split("_")[0];
@@ -131,12 +131,13 @@ void setupFolders() {
 
 
 
-void saveMailsList(ArrayList<Cell> cells, String imageName){
+void saveMailsList(ArrayList<Cell> cells, String imageName) {
   Table table = new Table();
-  for(Cell c : cells){
+  for (Cell c : cells) {
+    if (c.sm.isBackup) continue;
     TableRow row = table.addRow();
-    if(c.sm.isBackup) continue;
     row.setString("email", c.sm.email);
   }
-  saveTable(table, "data/"+imageName+".csv");  
+  println("exportando csv");
+  saveTable(table, "data/snapshots/"+imageName+".csv");
 }
