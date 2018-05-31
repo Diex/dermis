@@ -11,45 +11,63 @@ int cellsToShow;
 boolean showVideo = false;
 Ani nextImage;
 float nextImg = 0;
-float nextTimeout = 1;
+float nextTimeout = 6;
+
+
+float videoTimeOut = 20;
+float videoAlpha = 1.0;
+Ani videoAlphaFade;
+boolean videoOut=false;
 
 
 void setup() {
-  size(960, 540);
+  size(1920, 1080);
   transition = new Movie(this, "movie2.mp4");
   locs = new Locations(width, height, cols, rows);  
   Ani.init(this);
   fileManager();
   cellsToShow = 45;
   next();
+  videoAlphaFade = new Ani(this, 5.0, 0, "videoAlpha", 0, Ani.EXPO_IN, "onEnd:videoOut");
+  noCursor();
 }
 
+void videoOut() {
+  showVideo = false;
+  inFadeOut = false;
+  videoOut = false;
+  next(); // reinicio la levantada de imagenes
+  println("video fadeOut ended...");
+}
 
 void draw() {
   background(0);
+
+  pushStyle();
+  if (showVideo) {
+    tint(255, videoAlpha * 255);
+    image(transition, 0, 0, width, height);    
+    if (transition.time() >= videoTimeOut) {
+      if (!videoOut) {
+        videoAlphaFade.start();
+        videoOut = true;
+        println("videoFadeOut started...");
+      }
+    }
+  }
+  popStyle();
 
   for (Cell c : cells) {
     c.render();
   }
 
-  if (showVideo) {
-    blend(transition, 0, 0, transition.width, transition.height, 0, 0, width, height, SCREEN);  
-    //image(transition, 0, 0, width, height);
-    if (transition.time() == transition.duration()) {
-      println("video end");
-      showVideo = false;
+  if (allShown()) {
+    while (cells.size() > 0) {
+      Cell c = cells.get(0);
+      c = null;
+      cells.remove(0);
     }
-
-
-    if (allShown()) {
-      while (cells.size() > 0) {
-        Cell c = cells.get(0);
-        c = null;
-        cells.remove(0);
-      }
-      println("all cleared");
-      inFadeOut = false;
-    }
+    println("all cleared");
   }
 }
 
@@ -59,12 +77,13 @@ void keyPressed() {
 
 
 void hideAll() {
-
+  println("hideAll()");
   String name = Long.toHexString(Double.doubleToLongBits(Math.random()));
   for (Cell c : cells) c.hide();
   if (!allBackup()) {
     saveFrame("data/"+name+".jpg");  
     saveMailsList(cells, name);
+    println("saveData: " + "data/"+name+".jpg");
   }
 }
 
@@ -86,26 +105,19 @@ boolean allShown() {
 
 void showVideo() {
   showVideo = true;
-  transition.stop();
+  transition.jump(0);
   transition.play();
+  videoAlpha = 1.0;
 }
 
 boolean inFadeOut = false;
 void next() {  
-  if (showVideo) return;  
-  nextImage =  new Ani(this, nextTimeout, 0, "nextImg", 0, Ani.LINEAR, "onEnd:next");
   if (inFadeOut) return;
+  nextImage =  new Ani(this, nextTimeout, 0, "nextImg", 0, Ani.LINEAR, "onEnd:next");
   if (cellsToShow == cells.size()) {    
     hideAll();
+    showVideo();
     inFadeOut = true;
-
-    // hack....
-
-    transition.jump(0);
-    transition.play();
-    showVideo = true;
-
-    //.,......
     return;
   }
 

@@ -22,7 +22,7 @@ class Cell {
   }
 
   void hide() {
-    Ani.to(this, fadeOutTime, fadeOutTime, "alpha", 0, Ani.EXPO_IN, "onEnd:shown");
+    Ani.to(this, fadeOutTime, 3, "alpha", 0, Ani.EXPO_IN, "onEnd:shown");
   }
 
   void shown() {

@@ -56,6 +56,7 @@ SkinMark fromBackup() {
 
 void loadImagesFromBackup() {
   int howMany = bfolder.list().length > maxBackup ? maxBackup : bfolder.list().length;
+  println(howMany);
   File[] files = bfolder.listFiles();
   Arrays.sort(files, new Comparator<File>() {
     public int compare(File f1, File f2) {
@@ -63,9 +64,10 @@ void loadImagesFromBackup() {
     }
   }
   );  
+  
   if(files.length <= 0) return;
   
-  for (int i = 0; i <= howMany; i++) {
+  for (int i = 0; i < howMany; i++) {
     if (isJpg(files[i].getPath())) {
       PImage p = loadImage(files[i].getPath());
       String email = files[i].getName().split("_")[0];
