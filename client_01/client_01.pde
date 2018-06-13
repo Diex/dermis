@@ -7,10 +7,14 @@ Textfield input;
 PImage background;
 PImage over;
 
+final int screen_w = 1920/2;
+final int screen_h = 1080/2;
+
 void setup(){
-  size(1024, 768);
+  size(960, 540);
   video = new Capture(this, 640, 480);
   video.start();  
+  
   resized = createImage(216, 216, RGB);
   background = loadImage("piel.jpg");  
   PFont font = createFont("arial",20);
@@ -66,7 +70,7 @@ void controlEvent(ControlEvent theEvent) {
   
   textValue = theEvent.getStringValue();
   String name = Long.toHexString(Double.doubleToLongBits(Math.random()));
-  resized.save("./data/"+textValue+"_"+name+".jpg");
+  resized.save("./saved/"+textValue+"_"+name+".jpg");
   hideInput();
 }
 
